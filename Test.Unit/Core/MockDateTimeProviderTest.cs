@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Core;
 using NUnit.Framework;
 
@@ -23,12 +24,38 @@ namespace Test.Unit.Core
         }
 
         [Test]
+        public void Mocked_Now_Returns_SettedDateTime()
+        {
+            MockDateTimeProvider.SetNow(DateTime.Now);
+            DateTimeProvider provider = DateTimeProvider.DateTime;
+            DateTime dateTime = provider.Now;
+            Thread.Sleep(TimeSpan.FromSeconds(1));      //wait a little bit
+            DateTime dateTime2 = provider.Now;
+
+            Assert.AreEqual(dateTime, dateTime2);    //same date time after setting once
+            Assert.AreEqual(dateTime.Kind, dateTime2.Kind);
+        }
+
+        [Test]
         public void Mocked_UtcNow()
         {
             DateTime utcNow = DateTime.UtcNow;
             MockDateTimeProvider.SetUtcNow(utcNow);
             Assert.AreEqual(utcNow, DateTimeProvider.DateTime.UtcNow);
             Assert.AreNotEqual(utcNow, DateTimeProvider.DateTime.Now);
+        }
+
+        [Test]
+        public void Mocked_UtcNow_Returns_SettedDateTime()
+        {
+            MockDateTimeProvider.SetUtcNow(DateTime.UtcNow);
+            DateTimeProvider provider = DateTimeProvider.DateTime;
+            DateTime dateTime = provider.UtcNow;
+            Thread.Sleep(TimeSpan.FromSeconds(1));      //wait a little bit
+            DateTime dateTime2 = provider.UtcNow;
+
+            Assert.AreEqual(dateTime, dateTime2);    //same date time after setting once
+            Assert.AreEqual(dateTime.Kind, dateTime2.Kind);
         }
 
         [Test]
